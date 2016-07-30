@@ -1,0 +1,2 @@
+This a simple Determinant Quantum Monte Carlo (DQMC) code.
+We take Hubbard model on square lattice as an example, showing how DQMC simulation works.

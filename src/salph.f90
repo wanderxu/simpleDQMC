@@ -1,5 +1,4 @@
 subroutine salph
-  ! calculate dtau and alpha
 
   use mod_global
   implicit none
@@ -10,7 +9,6 @@ subroutine salph
   write(fout,*)
   write(fout,'(a)') ' In salph: '
 
-  !	for flipping of pair hopping-spin.
   nflipl(-1, 1) =  1
   nflipl( 1, 1) = -1
   

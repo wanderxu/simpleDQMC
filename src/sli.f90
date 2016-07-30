@@ -6,7 +6,6 @@ subroutine sli
   ! local
   integer :: ncount, nx, ny, n, i, j, iq, ix, iy, nk, imj_nx, imj_ny, imj
   real(dp) :: ri(2), qvec(2), rr
-  real(dp) :: fd(4)
 
   logical :: ltest
   integer :: nf, nc, i0, nc1, nc2
@@ -41,28 +40,6 @@ subroutine sli
      nnlist(n,8) = invlist( npbc(nx+1,l) , npbc(ny-1,l) )
   enddo
   
-  fd(1) =  1.d0
-  fd(2) = -1.d0
-  fd(3) =  1.d0
-  fd(4) = -1.d0
-
-
-  !zkron = dcmplx(0.d0,0.d0)
-  !do i = 1,lq
-  !   zkron(i,i) = dcmplx(1.d0,0.d0)
-  !enddo
-  
-  list_plaq = 0
-  do i = 1,lq
-     ix = list(i,1)
-     iy = list(i,2)
-     list_plaq(i,1) = invlist(     ix      ,iy           ) 
-     list_plaq(i,2) = invlist(npbc(ix+1,l) ,iy           ) 
-     list_plaq(i,3) = invlist(npbc(ix+1,l) ,npbc(iy+1,l) )
-     list_plaq(i,4) = invlist(     ix      ,npbc(iy+1,l) )
-     list_plaq(i,5) = invlist(     ix      ,iy           ) 
-  enddo
-
   ! latt_imj
   do j = 1, lq
       do i = 1, lq
@@ -94,67 +71,8 @@ subroutine sli
       end do
   end do
 
-  ! set ltpf
-  nf = 1
-  nc = 0
-  do ix = 1,l	
-  do iy = 1,l
-     if (mod(ix,2).ne.0 ) then
-        nc = nc + 1
-        ltpf(nc,nf) = invlist(ix,iy)
-     endif
-  enddo
-  enddo
-  ! write(6,*) 'length fam1: ', nc
   
-  nf = 2
-  nc = 0
-  do ix = 1,l	
-  do iy = 1,l
-     if (mod(ix,2).eq.0 ) then
-        nc = nc + 1
-        ltpf(nc,nf) = invlist(ix,iy)
-     endif
-  enddo
-  enddo
-  ! write(6,*) 'length fam2: ', nc
-  
-  nf = 3
-  nc = 0
-  do ix = 1,l	
-  do iy = 1,l
-     if (mod(iy,2).ne.0 ) then
-        nc = nc + 1
-        ltpf(nc,nf) = invlist(ix,iy)
-     endif
-  enddo
-  enddo
-  ! write(6,*) 'length fam3: ', nc
-  
-  nf = 4
-  nc = 0
-  do ix = 1,l	
-  do iy = 1,l
-     if (mod(iy,2).eq.0 ) then
-        nc = nc + 1
-        ltpf(nc,nf) = invlist(ix,iy)
-     endif
-  enddo
-  enddo
-  
-  
-  ltest = .false.
-  !ltest = .true.
-  if (ltest) then
-     do nf = 1,4
-     do i  = 1,lfam
-        i0 = ltpf(i,nf)
-        write(6,*) nf, list(i0,1), list(i0,2)
-     enddo
-     enddo
-  endif
-  
-  ! for particle hopping.
+  ! set sites with special coordinate for decompostion of kinetic matrix exp(-dtau*T)
   nc1 = 0
   nc2 = 0
   do i = 1,lq

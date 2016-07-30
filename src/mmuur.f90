@@ -1,6 +1,6 @@
 subroutine mmuur(a_up, a_dn, ntau )
 
-! perform exp(-dtau*Hu) * A
+! perform exp(V(c)) * A
 
   use mod_global
   use matrix_tmp

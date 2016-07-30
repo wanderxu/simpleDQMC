@@ -1,6 +1,6 @@
 subroutine mmuul(a_up, a_dn, ntau )
 
-! perform A * exp(-dtau*Hu)
+! perform A * exp(V(c))
 
   use mod_global
   use matrix_tmp

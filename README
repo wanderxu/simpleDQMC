@@ -1,7 +1,9 @@
 This a simple Determinant Quantum Monte Carlo (DQMC) code.
 We take Hubbard model on square lattice as an example, showing how DQMC simulation works.
 
-Steps to run the code:
+It is very easy to compile this code, you only need a fortran compiler.
+Here are steps to compile and run the code in Linux system.
+By default, we will use gfortran to compile it.
 
 1. download the code package and decompress it.
 assume you have put the code in directory repodir
@@ -26,3 +28,7 @@ cd repordir/analysis
 make
 
 In directory results/benchmark, there are some data for benchmark.
+
+For Windows users, you can use visual studio to compile it.
+But you can not use the available scripts to run the code and analysis results automatically.
+So I strongly suggest you to install a Linux system.

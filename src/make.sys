@@ -1,0 +1,17 @@
+# fortran compiler and linker
+#-------------------------------------------------------------------------
+F90    = gfortran
+LINKER = $(F90)
+
+# machine tuning options
+#-------------------------------------------------------------------------
+#CHECK  = -Wall -fcheck=all -fbacktrace -g
+LEVEL  = -O3 -unroll-aggressive
+
+# flags for compiler and linker
+#-------------------------------------------------------------------------
+FFLAGS = -c $(CHECK) $(LEVEL)
+
+# linear algebra library, lapack and blas
+#-------------------------------------------------------------------------
+LIBS= ../lib/libMM.a

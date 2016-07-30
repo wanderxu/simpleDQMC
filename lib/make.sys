@@ -1,0 +1,14 @@
+F90    = gfortran
+LINKER = $(F90)
+ARCHIVER = ar -ruv
+
+# machine tuning options
+#-------------------------------------------------------------------------
+CHECK  = # -warn all #-check all -traceback -g
+LEVEL  = -O3 -unroll-aggressive
+MARCH  = # -march=corei7-avx # core2 corei7 corei7-avx core-avx-i core-avx2
+
+# flags for compiler and linker
+#-------------------------------------------------------------------------
+FFLAGS = -c $(CHECK) $(LEVEL) $(MARCH)
+LFLAGS = -static -Wl,-no_pie

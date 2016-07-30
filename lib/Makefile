@@ -1,29 +1,3 @@
-##
-##
-## Introduction
-## ============
-##
-## Makefile for iqist/src/common directory.
-##
-## Usage
-## =====
-##
-## 'make' or 'make clean'
-##
-## Author
-## ======
-##
-## This building system is designed, created, implemented, and maintained by
-##
-## Li Huang // email: huangli712@gmail.com
-##
-## History
-## =======
-##
-## 09/18/2014 by li huang
-##
-##
-
 .SUFFIXES: .f90 .f
 
 #include ../build/make.sys

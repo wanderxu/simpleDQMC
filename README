@@ -24,3 +24,5 @@ When the simulation is finished, you can analysis data using the available scrip
 If you want to analysis the dynamical Green function, you need first compile a utility in analysis to compute covariance.
 cd repordir/analysis
 make
+
+In directory results/benchmark, there are some data for benchmark.

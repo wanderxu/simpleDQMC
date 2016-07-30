@@ -1,2 +1,26 @@
 This a simple Determinant Quantum Monte Carlo (DQMC) code.
 We take Hubbard model on square lattice as an example, showing how DQMC simulation works.
+
+Steps to run the code:
+
+1. download the code package and decompression it.
+assume you have put the code in directory repodir
+
+2. compile the library
+cd repodir/lib
+make
+
+3. compile the source code
+cd repodir/src
+make
+
+4. run the code
+cd repodir/run
+edit the parameters you want to calculate in cal_para.sh
+./run.sh >logs 2>&1 &
+
+5. analysis data
+When the simulation is finished, you can analysis data using the available script in directory results
+If you want to analysis the dynamical Green function, you need first compile a utility in analysis to compute covariance.
+cd repordir/analysis
+make

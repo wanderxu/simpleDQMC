@@ -1,2 +1,28 @@
-N¬jÈ¦¦Wƒz×«š)ÚžÔ.j{n˜Ê'µàš®Z@Àœ¡×–zÖ¤x{›mªÝš‡^–‰ìªæ«zV­¶'jÆ§{¦¦W¬†Œ"žhÀ4
-È¦ºV­Š‰ð¢¹,J×©²Ú+º{ayÊ{WhÂyhiÛayÊz–œ‘¨jw]yÊ&¦·¬²+Z²Ë¦{*.…«Þ¦ëm…ç(uè§v*ÞrÚ+Ê·©¡Ø«ÙÊ&¦)^¶¥‰ºÚ¯'­êhv*ÿ–&æjG·r‰©ŠW­…ë(º·r‡^qÚÞ¦‡b¯û+rf¤{ŠîžØ^r‡^qÚÞ¦‡b¯úîçb¶Ø^¥ªÚ™ë^®Ì¨»§¶ÚjW.•«^Šw––«jÈ®éì†Z ³myjv¥ÊÈ¬u«ZZ§¶¬Šk¥jØ¨ž+Šx¬…çr¢ç©Ú—+"±Ö­jë"žay«ÚŠV›•ë®*mŠwb­ç-¢¼«zË¥¶ÂÊ‹°j{m¡©Ú—+"²Ø^w)Úš'”jÞzwîËb¢|¨ºwžuø«²×(š˜¥y«­ŠX­Ê)Ú©r²+-¡Ê&¦ë^r‹Ú®&§qç­êh­Ø«ý©Ú—+"²f¤x‰ÝŠ·œ¶Šò­ë.–Û?méÜ†f«’Ø^­æ«zÊ&yÖ­iú+méÜ†f«
+This a simple Determinant Quantum Monte Carlo (DQMC) code.
+We take Hubbard model on square lattice as an example, showing how DQMC simulation works.
+
+Steps to run the code:
+
+1. download the code package and decompress it.
+assume you have put the code in directory repodir
+
+2. compile the library
+cd repodir/lib
+make
+
+3. compile the source code
+cd repodir/src
+make
+
+4. run the code
+cd repodir/run
+edit the parameters you want to calculate in cal_para.sh
+./run.sh >logs 2>&1 &
+
+5. analysis data
+When the simulation is finished, you can analysis data using the available script in directory results
+If you want to analysis the dynamical Green function, you need first compile a utility in analysis to compute covariance.
+cd repordir/analysis
+make
+
+In directory results/benchmark, there are some data for benchmark.

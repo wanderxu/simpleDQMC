@@ -3,7 +3,7 @@ We take Hubbard model on square lattice as an example, showing how DQMC simulati
 
 Steps to run the code:
 
-1. download the code package and decompression it.
+1. download the code package and decompress it.
 assume you have put the code in directory repodir
 
 2. compile the library

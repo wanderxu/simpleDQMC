@@ -4,16 +4,16 @@ module ftdqmc_core
   use obser
   implicit none
 
-  complex(dp), allocatable, dimension(:,:,:), save :: Ust_up, Vst_up, Ust_up_tmp, Vst_up_tmp
-  complex(dp), allocatable, dimension(:,:,:), save :: Ust_dn, Vst_dn, Ust_dn_tmp, Vst_dn_tmp
+  real(dp), allocatable, dimension(:,:,:), save :: Ust_up, Vst_up, Ust_up_tmp, Vst_up_tmp
+  real(dp), allocatable, dimension(:,:,:), save :: Ust_dn, Vst_dn, Ust_dn_tmp, Vst_dn_tmp
   real(dp), allocatable, dimension(:,:), save :: Dst_up, Dst_up_tmp
   real(dp), allocatable, dimension(:,:), save :: Dst_dn, Dst_dn_tmp
-  complex(dp), dimension(:,:), allocatable, save :: UR_up, VR_up, VL_up, UL_up, Bdtau1_up, grup_tmp
-  complex(dp), dimension(:,:), allocatable, save :: UR_dn, VR_dn, VL_dn, UL_dn, Bdtau1_dn, grdn_tmp
+  real(dp), dimension(:,:), allocatable, save :: UR_up, VR_up, VL_up, UL_up, Bdtau1_up, grup_tmp
+  real(dp), dimension(:,:), allocatable, save :: UR_dn, VR_dn, VL_dn, UL_dn, Bdtau1_dn, grdn_tmp
   real(dp), dimension(:), allocatable, save :: DRvec_up, DLvec_up
   real(dp), dimension(:), allocatable, save :: DRvec_dn, DLvec_dn
-  complex(dp), dimension(:,:), allocatable, save :: Bt2t1_up, gt0up, g0tup, g00up
-  complex(dp), dimension(:,:), allocatable, save :: Bt2t1_dn, gt0dn, g0tdn, g00dn
+  real(dp), dimension(:,:), allocatable, save :: Bt2t1_up, gt0up, g0tup, g00up
+  real(dp), dimension(:,:), allocatable, save :: Bt2t1_dn, gt0dn, g0tdn, g00dn
 
 
   contains
@@ -116,7 +116,7 @@ module ftdqmc_core
       integer, intent(in) :: n
 
       ! local
-      complex(dp), allocatable, dimension(:,:) :: Umat1, Umat2, Vmat1, Vmat2
+      real(dp), allocatable, dimension(:,:) :: Umat1, Umat2, Vmat1, Vmat2
       real(dp), allocatable, dimension(:) :: Dvec1, Dvec2
 
       allocate( Umat1(ndim,ndim), Umat2(ndim,ndim), Vmat1(ndim,ndim), Vmat2(ndim,ndim) )
@@ -129,11 +129,11 @@ module ftdqmc_core
       Vmat1(:,:) = Vst_up(:,:,n-1)
 
       ! Btmp = ( Bdtau1_up * Umat1 ) * Dmat1
-      call zgemm('n','n',ndim,ndim,ndim,cone,Bdtau1_up,ndim,Umat1,ndim,czero,Atmp,ndim)  ! Atmp = Bdtau1_up * Umat1
-      call s_z_x_diag_d(ndim,Atmp,Dvec1,Btmp) ! Btmp = Atmp * Dmat1
+      call dgemm('n','n',ndim,ndim,ndim,1.d0,Bdtau1_up,ndim,Umat1,ndim,0.d0,Atmp,ndim)  ! Atmp = Bdtau1_up * Umat1
+      call s_d_x_diag_d(ndim,Atmp,Dvec1,Btmp) ! Btmp = Atmp * Dmat1
 
-      call UDVdcmps_C(ndim, ndim, Btmp, Umat2, Dvec2, Vtmp)
-      call zgemm('n','n',ndim,ndim,ndim,cone,Vtmp,ndim,Vmat1,ndim,czero,Vmat2,ndim)  ! Vmat2 = Vtmp * Vmat1
+      call UDVdcmps_R(ndim, ndim, Btmp, Umat2, Dvec2, Vtmp)
+      call dgemm('n','n',ndim,ndim,ndim,1.d0,Vtmp,ndim,Vmat1,ndim,0.d0,Vmat2,ndim)  ! Vmat2 = Vtmp * Vmat1
       Ust_up(:,:,n) = Umat2(:,:)
       Dst_up(:,n)   = Dvec2(:)
       Vst_up(:,:,n) = Vmat2(:,:)
@@ -141,10 +141,10 @@ module ftdqmc_core
       Umat1(:,:) = Ust_dn(:,:,n-1)
       Dvec1(:)   = Dst_dn(:,n-1)
       Vmat1(:,:) = Vst_dn(:,:,n-1)
-      call zgemm('n','n',ndim,ndim,ndim,cone,Bdtau1_dn,ndim,Umat1,ndim,czero,Atmp,ndim)  ! Atmp = Bdtau1_dn * Umat1
-      call s_z_x_diag_d(ndim,Atmp,Dvec1,Btmp) ! Btmp = Atmp * Dmat1
-      call UDVdcmps_C(ndim, ndim, Btmp, Umat2, Dvec2, Vtmp)
-      call zgemm('n','n',ndim,ndim,ndim,cone,Vtmp,ndim,Vmat1,ndim,czero,Vmat2,ndim)  ! Vmat2 = Vtmp * Vmat1
+      call dgemm('n','n',ndim,ndim,ndim,1.d0,Bdtau1_dn,ndim,Umat1,ndim,0.d0,Atmp,ndim)  ! Atmp = Bdtau1_dn * Umat1
+      call s_d_x_diag_d(ndim,Atmp,Dvec1,Btmp) ! Btmp = Atmp * Dmat1
+      call UDVdcmps_R(ndim, ndim, Btmp, Umat2, Dvec2, Vtmp)
+      call dgemm('n','n',ndim,ndim,ndim,1.d0,Vtmp,ndim,Vmat1,ndim,0.d0,Vmat2,ndim)  ! Vmat2 = Vtmp * Vmat1
       Ust_dn(:,:,n) = Umat2(:,:)
       Dst_dn(:,n)   = Dvec2(:)
       Vst_dn(:,:,n) = Vmat2(:,:)
@@ -160,7 +160,7 @@ module ftdqmc_core
       integer, intent(in) :: n
 
       ! local
-      complex(dp), allocatable, dimension(:,:) :: Umat1, Umat2, Vmat1, Vmat2
+      real(dp), allocatable, dimension(:,:) :: Umat1, Umat2, Vmat1, Vmat2
       real(dp), allocatable, dimension(:) :: Dvec1, Dvec2
 
       allocate( Umat1(ndim,ndim), Umat2(ndim,ndim), Vmat1(ndim,ndim), Vmat2(ndim,ndim) )
@@ -173,10 +173,10 @@ module ftdqmc_core
       Umat1(:,:) = Ust_up(:,:,n)
 
       ! Btmp = Dmat1 * Umat1 * Bdtau1_up
-      call zgemm('n','n',ndim,ndim,ndim,cone,Umat1,ndim,Bdtau1_up,ndim,czero,Atmp,ndim)  ! Atmp = Umat1 * Bdtau1_up
-      call s_diag_d_x_z(ndim,Dvec1,Atmp,Btmp) ! Btmp = Dmat1 * Atmp
-      call UDVdcmps_C(ndim, ndim, Btmp, Vtmp, Dvec2, Umat2)  ! Btmp = Vtmp * Dmat2 * Umat2
-      call zgemm('n','n',ndim,ndim,ndim,cone,Vmat1,ndim,Vtmp,ndim,czero,Vmat2,ndim)  ! Vmat2 = Vmat1 * Vtmp 
+      call dgemm('n','n',ndim,ndim,ndim,1.d0,Umat1,ndim,Bdtau1_up,ndim,0.d0,Atmp,ndim)  ! Atmp = Umat1 * Bdtau1_up
+      call s_diag_d_x_d(ndim,Dvec1,Atmp,Btmp) ! Btmp = Dmat1 * Atmp
+      call UDVdcmps_R(ndim, ndim, Btmp, Vtmp, Dvec2, Umat2)  ! Btmp = Vtmp * Dmat2 * Umat2
+      call dgemm('n','n',ndim,ndim,ndim,1.d0,Vmat1,ndim,Vtmp,ndim,0.d0,Vmat2,ndim)  ! Vmat2 = Vmat1 * Vtmp 
       Vst_up(:,:,n-1) = Vmat2(:,:)
       Dst_up(:,n-1) = Dvec2(:)
       Ust_up(:,:,n-1) = Umat2(:,:)
@@ -184,10 +184,10 @@ module ftdqmc_core
       Vmat1(:,:) = Vst_dn(:,:,n)
       Dvec1(:)   = Dst_dn(:,n)
       Umat1(:,:) = Ust_dn(:,:,n)
-      call zgemm('n','n',ndim,ndim,ndim,cone,Umat1,ndim,Bdtau1_dn,ndim,czero,Atmp,ndim)  ! Atmp = Umat1 * Bdtau1_dn
-      call s_diag_d_x_z(ndim,Dvec1,Atmp,Btmp) ! Btmp = Dmat1 * Atmp
-      call UDVdcmps_C(ndim, ndim, Btmp, Vtmp, Dvec2, Umat2)  ! Btmp = Vtmp * Dmat2 * Umat2
-      call zgemm('n','n',ndim,ndim,ndim,cone,Vmat1,ndim,Vtmp,ndim,czero,Vmat2,ndim)  ! Vmat2 = Vmat1 * Vtmp 
+      call dgemm('n','n',ndim,ndim,ndim,1.d0,Umat1,ndim,Bdtau1_dn,ndim,0.d0,Atmp,ndim)  ! Atmp = Umat1 * Bdtau1_dn
+      call s_diag_d_x_d(ndim,Dvec1,Atmp,Btmp) ! Btmp = Dmat1 * Atmp
+      call UDVdcmps_R(ndim, ndim, Btmp, Vtmp, Dvec2, Umat2)  ! Btmp = Vtmp * Dmat2 * Umat2
+      call dgemm('n','n',ndim,ndim,ndim,1.d0,Vmat1,ndim,Vtmp,ndim,0.d0,Vmat2,ndim)  ! Vmat2 = Vmat1 * Vtmp 
       Vst_dn(:,:,n-1) = Vmat2(:,:)
       Dst_dn(:,n-1) = Dvec2(:)
       Ust_dn(:,:,n-1) = Umat2(:,:)
@@ -237,11 +237,11 @@ module ftdqmc_core
       logical, intent(in) :: lmeasure
 
       ! local variables
-      integer :: nt, n, nt_ob, nt1, nt2
+      integer :: nt, n, nt1, nt2
 
       integer, external :: NRanf
 
-      complex(dp), allocatable, dimension(:,:) :: Umat1, Vmat1
+      real(dp), allocatable, dimension(:,:) :: Umat1, Vmat1
       real(dp), allocatable, dimension(:) :: Dvec1
 
       allocate( Umat1(ndim,ndim), Vmat1(ndim,ndim) )
@@ -256,8 +256,6 @@ module ftdqmc_core
       Dst_dn(:,nst)   = Ivec(:)
       Ust_dn(:,:,nst) = Imat(:,:)
   
-      nt_ob = NRanf( iseed,  ltrot )
-
       do nt = ltrot, 1, -1
           if ( mod(nt, nwrap) .eq. 0 .and. (nt/nwrap) .lt. nst ) then
               n = nt/nwrap
@@ -277,7 +275,7 @@ module ftdqmc_core
               DLvec_up(:) = Dst_up(:,n)  
               VL_up(:,:)  = Vst_up(:,:,n)
               call green_equaltime( n, ndim, UR_up, DRvec_up, VR_up, VL_up, DLvec_up, UL_up, grtmp )
-              call s_compare_max_z( ndim, grtmp, grup, max_wrap_error_tmp )
+              call s_compare_max_d( ndim, grtmp, grup, max_wrap_error_tmp )
               if( max_wrap_error_tmp .gt. max_wrap_error ) max_wrap_error = max_wrap_error_tmp
               grup(:,:) = grtmp(:,:)
 
@@ -286,13 +284,13 @@ module ftdqmc_core
               DLvec_dn(:) = Dst_dn(:,n)  
               VL_dn(:,:)  = Vst_dn(:,:,n)
               call green_equaltime( n, ndim, UR_dn, DRvec_dn, VR_dn, VL_dn, DLvec_dn, UL_dn, grtmp )
-              call s_compare_max_z( ndim, grtmp, grdn, max_wrap_error_tmp )
+              call s_compare_max_d( ndim, grtmp, grdn, max_wrap_error_tmp )
               if( max_wrap_error_tmp .gt. max_wrap_error ) max_wrap_error = max_wrap_error_tmp
               grdn(:,:) = grtmp(:,:)
           end if
   
           ! obser
-          if( lmeasure .and. ( abs(nt-nt_ob) .le. obs_segment_len .or. abs(nt-nt_ob) .ge. (ltrot-obs_segment_len) ) ) then
+          if( lmeasure ) then
              call obser_equaltime(nt)
           end if
   
@@ -332,7 +330,6 @@ module ftdqmc_core
           g0tdn = grdn-Imat
       end if
   
-      nt_ob = NRanf( iseed,  ltrot )
       do nt = 1, ltrot, 1
 
           ! wrap H0
@@ -350,7 +347,7 @@ module ftdqmc_core
           end if
   
           ! obser
-          if( lmeasure .and. ( abs(nt-nt_ob) .le. obs_segment_len .or. abs(nt-nt_ob) .ge. (ltrot-obs_segment_len) ) ) then
+          if( lmeasure .and. .not. ltau ) then
              call obser_equaltime(nt)
           end if
   
@@ -376,7 +373,7 @@ module ftdqmc_core
               else
                   call green_tau(n, ndim, UR_up, DRvec_up, VR_up, VL_up, DLvec_up, UL_up, g00up, gt0up, g0tup,  grtmp )
               end if
-              call s_compare_max_z( ndim, grtmp, grup, max_wrap_error_tmp )
+              call s_compare_max_d( ndim, grtmp, grup, max_wrap_error_tmp )
               if( max_wrap_error_tmp .gt. max_wrap_error ) max_wrap_error = max_wrap_error_tmp
               grup(:,:) = grtmp(:,:)
 
@@ -389,7 +386,7 @@ module ftdqmc_core
               else
                   call green_tau(n, ndim, UR_dn, DRvec_dn, VR_dn, VL_dn, DLvec_dn, UL_dn, g00dn, gt0dn,  g0tdn,  grtmp )
               end if
-              call s_compare_max_z( ndim, grtmp, grdn, max_wrap_error_tmp )
+              call s_compare_max_d( ndim, grtmp, grdn, max_wrap_error_tmp )
               if( max_wrap_error_tmp .gt. max_wrap_error ) max_wrap_error = max_wrap_error_tmp
               grdn(:,:) = grtmp(:,:)
 
@@ -411,21 +408,21 @@ module ftdqmc_core
 
                   ! G(t',0) = B(t',t) * G(t,0)
                   Btmp = gt0up
-                  call zgemm('n','n',ndim,ndim,ndim,cone,Bdtau1_up,ndim,Btmp,ndim,czero,gt0up,ndim)
+                  call dgemm('n','n',ndim,ndim,ndim,1.d0,Bdtau1_up,ndim,Btmp,ndim,0.d0,gt0up,ndim)
 
                   ! G(0,t') = G(0,t) * B(t',t)^-1
-                  call InvMatrx_Z(ndim,Bdtau1_up)
+                  call InvMatrx_D(ndim,Bdtau1_up)
                   Btmp = g0tup
-                  call zgemm('n','n',ndim,ndim,ndim,cone,Btmp,ndim,Bdtau1_up,ndim,czero,g0tup,ndim)
+                  call dgemm('n','n',ndim,ndim,ndim,1.d0,Btmp,ndim,Bdtau1_up,ndim,0.d0,g0tup,ndim)
 
                   ! G(t',0) = B(t',t) * G(t,0)
                   Btmp = gt0dn
-                  call zgemm('n','n',ndim,ndim,ndim,cone,Bdtau1_dn,ndim,Btmp,ndim,czero,gt0dn,ndim)
+                  call dgemm('n','n',ndim,ndim,ndim,1.d0,Bdtau1_dn,ndim,Btmp,ndim,0.d0,gt0dn,ndim)
 
                   ! G(0,t') = G(0,t) * B(t',t)^-1
-                  call InvMatrx_Z(ndim,Bdtau1_dn)
+                  call InvMatrx_D(ndim,Bdtau1_dn)
                   Btmp = g0tdn
-                  call zgemm('n','n',ndim,ndim,ndim,cone,Btmp,ndim,Bdtau1_dn,ndim,czero,g0tdn,ndim)
+                  call dgemm('n','n',ndim,ndim,ndim,1.d0,Btmp,ndim,Bdtau1_dn,ndim,0.d0,g0tdn,ndim)
 
               end if
 
@@ -444,13 +441,13 @@ module ftdqmc_core
     subroutine green_equaltime( nt, ndm, ure, dre, vre, vle, dle, ule, gtt )
       implicit none
       integer, intent(in) :: nt, ndm
-      complex(dp), dimension(ndm,ndm), intent(in) :: ure, vre, vle, ule
+      real(dp), dimension(ndm,ndm), intent(in) :: ure, vre, vle, ule
       real(dp), dimension(ndm), intent(in) :: dre, dle
-      complex(dp), dimension(ndm,ndm), intent(out) :: gtt
+      real(dp), dimension(ndm,ndm), intent(out) :: gtt
 
       ! local
       integer :: i, j
-      complex(dp), allocatable, dimension(:,:) :: uutmpinv, uinv_tmp
+      real(dp), allocatable, dimension(:,:) :: uutmpinv, uinv_tmp
       real(dp), allocatable, dimension(:) :: drmax, drmin, dlmax, dlmin
 
       allocate( uutmpinv(ndm,ndm), uinv_tmp(ndm,ndm) )
@@ -463,12 +460,12 @@ module ftdqmc_core
       call s_dvec_min_max(ndm,dle,dlmax,dlmin)
 
       ! uutmp = ule*ure
-      call zgemm('n','n',ndm,ndm,ndm,cone,ule,ndm,ure,ndm,czero,uutmp,ndm)  ! uutmp = ule*ure
+      call dgemm('n','n',ndm,ndm,ndm,1.d0,ule,ndm,ure,ndm,0.d0,uutmp,ndm)  ! uutmp = ule*ure
       ! vvtmp = vre*vle
-      call zgemm('n','n',ndm,ndm,ndm,cone,vre,ndm,vle,ndm,czero,vvtmp,ndm)  ! vvtmp = vre*vle
+      call dgemm('n','n',ndm,ndm,ndm,1.d0,vre,ndm,vle,ndm,0.d0,vvtmp,ndm)  ! vvtmp = vre*vle
 
       uutmpinv = uutmp
-      call InvMatrx_Z(ndm,uutmpinv)
+      call InvMatrx_D(ndm,uutmpinv)
 
       !! >> g(t,t)
       ! drmax^-1 * ( ule * ure )^-1 dlmax^-1
@@ -485,15 +482,15 @@ module ftdqmc_core
       end do
 
       dvvdtmp(:,:) = Atmp(:,:) + Btmp(:,:)
-      call InvMatrx_Z(ndm,dvvdtmp)
+      call InvMatrx_D(ndm,dvvdtmp)
 
       uinv_tmp=ule
-      call InvMatrx_Z(ndm,uinv_tmp)
+      call InvMatrx_D(ndm,uinv_tmp)
 
       call s_v_invd_u( ndm, uinv_tmp, dlmax, dvvdtmp, Btmp )
 
       uinv_tmp=ure
-      call InvMatrx_Z(ndm,uinv_tmp)
+      call InvMatrx_D(ndm,uinv_tmp)
       
       call s_v_invd_u( ndm, Btmp, drmax, uinv_tmp, gtt )
 
@@ -509,13 +506,13 @@ module ftdqmc_core
     subroutine green_tau(nt, ndm, ure, dre, vre, vle, dle, ule, g00, gt0, g0t, gtt )
       implicit none
       integer, intent(in) :: nt, ndm
-      complex(dp), dimension(ndm,ndm), intent(inout) :: ure, vre, vle, ule
+      real(dp), dimension(ndm,ndm), intent(inout) :: ure, vre, vle, ule
       real(dp), dimension(ndm), intent(in) :: dre, dle
-      complex(dp), dimension(ndm,ndm), intent(out) :: g00, gt0, g0t, gtt
+      real(dp), dimension(ndm,ndm), intent(out) :: g00, gt0, g0t, gtt
 
       ! local
       integer :: i, j
-      complex(dp), allocatable, dimension(:,:) :: uutmpinv, uinv_tmp
+      real(dp), allocatable, dimension(:,:) :: uutmpinv, uinv_tmp
       real(dp), allocatable, dimension(:) :: drmax, drmin, dlmax, dlmin
 
       allocate( uutmpinv(ndm,ndm), uinv_tmp(ndm,ndm) )
@@ -529,12 +526,12 @@ module ftdqmc_core
 
 
       ! uutmp = ule*ure
-      call zgemm('n','n',ndm,ndm,ndm,cone,ule,ndm,ure,ndm,czero,uutmp,ndm)  ! uutmp = ule*ure
+      call dgemm('n','n',ndm,ndm,ndm,1.d0,ule,ndm,ure,ndm,0.d0,uutmp,ndm)  ! uutmp = ule*ure
       ! vvtmp = vre*vle
-      call zgemm('n','n',ndm,ndm,ndm,cone,vre,ndm,vle,ndm,czero,vvtmp,ndm)  ! vvtmp = vre*vle
+      call dgemm('n','n',ndm,ndm,ndm,1.d0,vre,ndm,vle,ndm,0.d0,vvtmp,ndm)  ! vvtmp = vre*vle
 
       uutmpinv = uutmp
-      call InvMatrx_Z(ndm,uutmpinv)
+      call InvMatrx_D(ndm,uutmpinv)
 
       !! >> g(t,t)
       ! drmax^-1 * ( ule * ure )^-1 dlmax^-1
@@ -551,15 +548,15 @@ module ftdqmc_core
       end do
 
       dvvdtmp(:,:) = Atmp(:,:) + Btmp(:,:)
-      call InvMatrx_Z(ndm,dvvdtmp)
+      call InvMatrx_D(ndm,dvvdtmp)
 
       uinv_tmp=ule
-      call InvMatrx_Z(ndm,uinv_tmp)
+      call InvMatrx_D(ndm,uinv_tmp)
 
       call s_v_invd_u( ndm, uinv_tmp, dlmax, dvvdtmp, Btmp )
 
       uinv_tmp=ure
-      call InvMatrx_Z(ndm,uinv_tmp)
+      call InvMatrx_D(ndm,uinv_tmp)
       
       call s_v_invd_u( ndm, Btmp, drmax, uinv_tmp, gtt )
 
@@ -567,7 +564,7 @@ module ftdqmc_core
       call s_v_d_u( ndm, Btmp, drmin, vre, gt0 )
 
       !! >> g(0,0)
-      call InvMatrx_Z( ndm, vvtmp )
+      call InvMatrx_D( ndm, vvtmp )
 
       ! dlmax^-1 * ( vre * vle )^-1 drmax^-1
       do j = 1, ndm
@@ -583,13 +580,13 @@ module ftdqmc_core
       end do
 
       dvvdtmp(:,:) = Atmp(:,:) + Btmp(:,:)
-      call InvMatrx_Z(ndm,dvvdtmp)
+      call InvMatrx_D(ndm,dvvdtmp)
 
-      call InvMatrx_Z(ndm,vre)
+      call InvMatrx_D(ndm,vre)
 
       call s_v_invd_u( ndm, vre, drmax, dvvdtmp, Btmp )
 
-      call InvMatrx_Z(ndm,vle)
+      call InvMatrx_D(ndm,vle)
       call s_v_invd_u( ndm, Btmp, dlmax, vle, g00 )
 
       !! >> g(0,t)
@@ -609,14 +606,12 @@ module ftdqmc_core
       ! B(tau1,tau2)
       implicit none
       integer, intent(in) :: nt1, nt2
-      complex(dp), dimension(ndim,ndim), intent(out) :: bmat_up
-      complex(dp), dimension(ndim,ndim), intent(out) :: bmat_dn
+      real(dp), dimension(ndim,ndim), intent(out) :: bmat_up
+      real(dp), dimension(ndim,ndim), intent(out) :: bmat_dn
 
       ! local
       integer :: nt
-      complex(dp) :: phaseu
 
-      phaseu = cone
       bmat_up(:,:) = Imat(:,:)
       bmat_dn(:,:) = Imat(:,:)
       do nt = nt2, nt1

@@ -6,13 +6,13 @@ subroutine mmthr(a_up, a_dn)
   use matrix_tmp
     
   !arguments:
-  complex(dp), dimension(ndim,ndim), intent(inout) :: a_up
-  complex(dp), dimension(ndim,ndim), intent(inout) :: a_dn
+  real(dp), dimension(ndim,ndim), intent(inout) :: a_up
+  real(dp), dimension(ndim,ndim), intent(inout) :: a_dn
 
   ! local
   integer :: nf, i, j, i1, i2, i3, i4, ist
 
-  if (rt.gt.zero) then
+  if (rt.gt.0.d0) then
       do nf = 1,2
          do i = 1,lq/4
             ist = i + (nf - 1)*lq/4
@@ -41,7 +41,7 @@ subroutine mmthr(a_up, a_dn)
       enddo
   endif 
 
-  if (rt.gt.zero) then
+  if (rt.gt.0.d0) then
       do nf = 1,2
          do i = 1,lq/4
             ist = i + (nf - 1)*lq/4

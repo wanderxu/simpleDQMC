@@ -10,11 +10,6 @@ module mod_global
   integer, parameter :: dp = 8
   integer, parameter :: fout = 50
   integer, parameter :: finp = 51
-  real(dp), parameter :: zero = 0.d0
-  complex(dp), parameter :: cone = dcmplx( 1.d0, 0.d0 )
-  complex(dp), parameter :: czero = dcmplx( 0.d0, 0.d0 )
-  complex(dp), parameter :: chalf = dcmplx( 0.5d0, 0.d0 )
-  complex(dp), parameter :: cquarter = dcmplx( 0.25d0, 0.d0 )
   real(dp), save :: pi = dacos(-1.d0)
  
   ! lattice
@@ -45,8 +40,8 @@ module mod_global
   integer, save :: iseed             ! seed for random number generator
   real(dp), save :: dtau             ! trotter decompostion step
   integer, save :: ltrot             ! total number of time slice after trotter decompostion
-  complex(dp), allocatable, dimension(:,:), save :: Imat   ! Identity matrix
-  complex(dp), allocatable, dimension(:,:), save :: grup, grdn, grupc, grdnc   ! green functions
+  real(dp), allocatable, dimension(:,:), save :: Imat   ! Identity matrix
+  real(dp), allocatable, dimension(:,:), save :: grup, grdn, grupc, grdnc   ! green functions
   real(dp), allocatable, dimension(:), save :: Ivec        ! vector will all elements one
 
   ! cal. control
@@ -64,17 +59,16 @@ module mod_global
 
   ! for obs
   integer, save :: nobs             ! number of obser in one bin
-  integer, save :: obs_segment_len  ! the obser window
-  complex(dp), dimension(10), save :: main_obs !  acculators for some observation in main program, like accept rate
+  real(dp), dimension(10), save :: main_obs !  acculators for some observation in main program, like accept rate
 
 
   ! for DQMC
   integer, dimension(-1:1,1), save :: nflipl      ! for flipping auxilary field
-  complex(dp), dimension(-1:1), save :: xsigma_u_up, xsigma_u_dn  ! interaction part matrix element e^(-V(c)), depend on filed
-  complex(dp), dimension(-1:1,1), save :: delta_u_up, delta_u_dn  ! ratio of interaction part matrix element for different fileds
+  real(dp), dimension(-1:1), save :: xsigma_u_up, xsigma_u_dn  ! interaction part matrix element e^(-V(c)), depend on filed
+  real(dp), dimension(-1:1,1), save :: delta_u_up, delta_u_dn  ! ratio of interaction part matrix element for different fileds
 
-  complex(dp), allocatable, dimension(:,:,:), save :: urt, urtm1       ! part of e^(-dtau*T) and e^(dtau*T) for up spin flavor
-  complex(dp), allocatable, dimension(:,:,:), save :: urt_dn, urtm1_dn ! part of e^(-dtau*T) and e^(dtau*T) for dn spin flavor
+  real(dp), allocatable, dimension(:,:,:), save :: urt, urtm1       ! part of e^(-dtau*T) and e^(dtau*T) for up spin flavor
+  real(dp), allocatable, dimension(:,:,:), save :: urt_dn, urtm1_dn ! part of e^(-dtau*T) and e^(dtau*T) for dn spin flavor
 
   integer, allocatable, dimension(:,:), save :: nsigl_u                ! auxilary field
   real(dp), save :: max_wrap_error, max_wrap_error_tmp                 ! error of progating green function
@@ -100,7 +94,6 @@ module mod_global
 
     nsweep = 200
     nbin = 5
-    obs_segment_len = 10
 
     lupdateu = .false.
     
@@ -148,9 +141,9 @@ module mod_global
 
     allocate( Imat(ndim,ndim) )
     allocate( Ivec(ndim) )
-    Imat = czero
+    Imat = 0.d0
     do i = 1, ndim
-        Imat(i,i) = cone
+        Imat(i,i) = 1.d0
         Ivec(i) = 1.d0
     end do
 

@@ -1,9 +1,9 @@
 module matrix_tmp
   use mod_global, only: ndim, dp
   implicit none
-  complex(dp), dimension(:), allocatable :: v1, v2, v3, v4, v5, v6, v7, v8
-  complex(dp), dimension(:), allocatable :: vec1, vec2, vhlp1, uhlp1, vhlp2, uhlp2, u1, u2
-  complex(dp), dimension(:,:), allocatable :: Atmp, Btmp, Vtmp, vvtmp, uutmp, dvvtmp, dvvdtmp, grtmp, gt0tmp, g0ttmp
+  real(dp), dimension(:), allocatable :: v1, v2, v3, v4, v5, v6, v7, v8
+  real(dp), dimension(:), allocatable :: vec1, vec2, vhlp1, uhlp1, vhlp2, uhlp2, u1, u2
+  real(dp), dimension(:,:), allocatable :: Atmp, Btmp, Vtmp, vvtmp, uutmp, dvvtmp, dvvdtmp, grtmp, gt0tmp, g0ttmp
 
   contains
 

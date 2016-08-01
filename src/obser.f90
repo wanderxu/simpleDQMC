@@ -1,15 +1,11 @@
 module obser
   use mod_global
 
-  complex(dp), allocatable, dimension(:), save :: spinz
-  complex(dp), allocatable, dimension(:,:), save :: spin_corrlt
+  real(dp), allocatable, dimension(:,:), save :: spin_corrlt
 
-  integer, allocatable, dimension(:), save :: isingzz_corrlt
-  integer, allocatable, dimension(:,:), save :: isingzztau_corrlt
+  real(dp), save :: obs_bin(10)
 
-  complex(dp), save :: obs_bin(10)
-
-  complex(dp), allocatable, dimension(:,:), save :: gtau
+  real(dp), allocatable, dimension(:,:), save :: gtau
 
   contains
 
@@ -32,10 +28,10 @@ module obser
   subroutine obser_init
     implicit none
     nobs = 0
-    spin_corrlt(:,:) = czero
-    obs_bin(:) = czero
+    spin_corrlt(:,:) = 0.d0
+    obs_bin(:) = 0.d0
     if(ltau) then
-        gtau(:,:) = czero
+        gtau(:,:) = 0.d0
     end if
 
   end subroutine obser_init
@@ -46,7 +42,7 @@ module obser
 
     ! local 
     integer :: i, j, i1, i2, i3, i4, i_1, nf, ist
-    complex(dp) :: szsz_tmp, zkint, zedoub, zne
+    real(dp) :: szsz_tmp, zkint, zedoub, zne
 
     nobs = nobs + 1
 
@@ -70,14 +66,14 @@ module obser
     end do
 
     ! zne
-    zne = czero
+    zne = 0.d0
     do i = 1, ndim
         zne = zne + grupc(i,i) + grdnc(i,i)
     end do
     obs_bin(1) = obs_bin(1) + zne
 
     ! measure kinetic energy
-    zkint = czero
+    zkint = 0.d0
     IF ( l .gt. 1 ) THEN
     do nf = 1,2
        do i_1 = 1,lq/4
@@ -111,11 +107,11 @@ module obser
        end do
     end do
     ELSE
-        zkint = zkint + dcmplx(-4.d0*rt,0.d0) * ( grupc(1,1) + grdnc(1,1) )
+        zkint = zkint - 4.d0*rt * ( grupc(1,1) + grdnc(1,1) )
     ENDIF
-    obs_bin(2) = obs_bin(2) + zkint*dcmplx(-rt,0.d0)
+    obs_bin(2) = obs_bin(2) + zkint*(-rt)
 
-    zedoub = czero
+    zedoub = 0.d0
     do i = 1, lq
         zedoub = zedoub + grupc(i,i)*grdnc(i,i)
     end do
@@ -141,7 +137,7 @@ module obser
   subroutine obsert(nt, grt0_up, grt0_dn, gr0t_up, gr0t_dn, grtt_up, grtt_dn)
     implicit none
     integer, intent(in) :: nt
-    complex(dp), dimension(ndim,ndim), intent(in) :: grt0_up, grt0_dn, gr0t_up, gr0t_dn, grtt_up, grtt_dn
+    real(dp), dimension(ndim,ndim), intent(in) :: grt0_up, grt0_dn, gr0t_up, gr0t_dn, grtt_up, grtt_dn
 
     ! local 
     integer :: i, j, imj, iax, imx, jax, jmx
@@ -154,7 +150,7 @@ module obser
             iax = nnlist(i,1) ! i+x
             imx = nnlist(i,3) ! i-x
 
-            gtau(imj,nt) = gtau(imj,nt) + (grt0_up(i,j)+grt0_dn(i,j))*chalf
+            gtau(imj,nt) = gtau(imj,nt) + (grt0_up(i,j)+grt0_dn(i,j))*0.5d0
         end do
     end do
   end subroutine obsert

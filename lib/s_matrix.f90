@@ -73,6 +73,28 @@
 
   end subroutine s_z_x_diag_d
 
+  subroutine s_d_x_diag_d( ndim, Amat, dvec, Bmat )
+  !%  Written by Xiao Yan Xu (wanderxu@gmail.com)
+  !%  Date: July 30, 2016
+  !%  perform the product of a full matrix and a diagnoal matrix
+  !%  Input: ndim, Amat, dvec
+  !%  Output: Bmat
+    implicit none
+    integer, intent(in) :: ndim
+    real(8), dimension(ndim,ndim), intent(in) :: Amat
+    real(8), dimension(ndim), intent(in) :: dvec
+    real(8), dimension(ndim,ndim), intent(out) :: Bmat
+    
+    ! local
+    integer :: i, j
+    do i = 1, ndim
+        do j = 1, ndim
+            Bmat(j,i) = dvec(i) * Amat(j,i)
+        end do
+    end do
+
+  end subroutine s_d_x_diag_d
+
   subroutine s_diag_d_x_z( ndim, dvec, Amat, Bmat )
   !%  Written by Xiao Yan Xu (wanderxu@gmail.com)
   !%  Date: July 30, 2016
@@ -94,6 +116,28 @@
     end do
 
   end subroutine s_diag_d_x_z
+
+  subroutine s_diag_d_x_d( ndim, dvec, Amat, Bmat )
+  !%  Written by Xiao Yan Xu (wanderxu@gmail.com)
+  !%  Date: July 30, 2016
+  !%  perform the product of a full matrix and a diagnoal matrix
+  !%  Input: ndim, Amat, dvec
+  !%  Output: Bmat
+    implicit none
+    integer, intent(in) :: ndim
+    real(8), dimension(ndim), intent(in) :: dvec
+    real(8), dimension(ndim,ndim), intent(in) :: Amat
+    real(8), dimension(ndim,ndim), intent(out) :: Bmat
+    
+    ! local
+    integer :: i, j
+    do i = 1, ndim
+        do j = 1, ndim
+            Bmat(j,i) = dvec(j) * Amat(j,i)
+        end do
+    end do
+
+  end subroutine s_diag_d_x_d
 
   subroutine s_diag_dvd( ndim, dvecr, Amat, dvecl, Bmat )
   !%  Written by Xiao Yan Xu (wanderxu@gmail.com)
@@ -126,15 +170,15 @@
     implicit none
     integer, intent(in) :: ndim
     real(8), dimension(ndim), intent(in) :: dvec
-    complex(8), dimension(ndim,ndim), intent(in) :: vmat, umat
-    complex(8), dimension(ndim,ndim), intent(out) :: zmat
+    real(8), dimension(ndim,ndim), intent(in) :: vmat, umat
+    real(8), dimension(ndim,ndim), intent(out) :: zmat
     
     ! local
-    complex(8) :: ztmp
+    real(8) :: ztmp
     integer :: i, j, k
     do i = 1, ndim
         do j = 1, ndim
-            ztmp = dcmplx(0.d0,0.d0)
+            ztmp = 0.d0
             do k = 1, ndim
                 ztmp = ztmp + vmat(j,k)*umat(k,i) / dvec(k)
             end do
@@ -153,15 +197,15 @@
     implicit none
     integer, intent(in) :: ndim
     real(8), dimension(ndim), intent(in) :: dvec
-    complex(8), dimension(ndim,ndim), intent(in) :: vmat, umat
-    complex(8), dimension(ndim,ndim), intent(out) :: zmat
+    real(8), dimension(ndim,ndim), intent(in) :: vmat, umat
+    real(8), dimension(ndim,ndim), intent(out) :: zmat
     
     ! local
-    complex(8) :: ztmp
+    real(8) :: ztmp
     integer :: i, j, k
     do i = 1, ndim
         do j = 1, ndim
-            ztmp = dcmplx(0.d0,0.d0)
+            ztmp = 0.d0
             do k = 1, ndim
                 ztmp = ztmp + vmat(j,k)*umat(k,i) * dvec(k)
             end do

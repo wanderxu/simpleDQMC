@@ -3,20 +3,16 @@ subroutine prtau
   use obser
   implicit none
 
-  complex(dp) :: znorm
-  complex(dp), dimension(:,:), allocatable :: collect2
   character(40) :: filek
-  integer :: n
 
   interface
      subroutine fourier_trans_tau(gr,filek)
-       complex(kind=8), dimension(:,:) :: gr
+       real(kind=8), dimension(:,:) :: gr
        character (40) :: filek
      end subroutine fourier_trans_tau
   end interface
 
-  znorm = cone / dcmplx( dble(nsweep), 0.d0 )
-  gtau= znorm * gtau
+  gtau= gtau/dble(nsweep)
 
   filek = "gtau.bin"
   call fourier_trans_tau(gtau,filek)
@@ -25,7 +21,7 @@ end subroutine prtau
 subroutine fourier_trans_tau(gr,filek)
   use mod_global
   implicit none
-  complex(dp), dimension(:,:) :: gr
+  real(dp), dimension(:,:) :: gr
   integer :: imj, nt, nk
   character (40) :: filek
   real(dp) :: xk_p(2)

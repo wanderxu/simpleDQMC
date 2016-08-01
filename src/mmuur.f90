@@ -7,8 +7,8 @@ subroutine mmuur(a_up, a_dn, ntau )
   implicit none
 
   !arguments:
-  complex(dp), dimension(ndim,ndim), intent(inout) :: a_up
-  complex(dp), dimension(ndim,ndim), intent(inout) :: a_dn
+  real(dp), dimension(ndim,ndim), intent(inout) :: a_up
+  real(dp), dimension(ndim,ndim), intent(inout) :: a_dn
   integer, intent(in) :: ntau
 
   !	local

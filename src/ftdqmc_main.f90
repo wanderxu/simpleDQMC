@@ -4,7 +4,7 @@ program ftdqmc_main
 !>  Here is an example for solving Hubbard model on square lattice
 !> 
 !>  Hamiltionian:
-!>     H = -t \sum_<ijs> c_is^dagger c_js + h.c. + U \sum_i ( n_iup - n_idn )
+!>     H = -t \sum_<ijs> c_is^dagger c_js + h.c. + U \sum_i ( n_iup - 1/2) * ( n_idn - 1/2 )
 !>   
 !>  Partition function
 !>     Z = \sum_c w(c),   c is configuration
@@ -27,7 +27,7 @@ program ftdqmc_main
 
   open( unit=fout, file='ftdqmc.out', status='unknown' )
 
-  main_obs(:) = czero
+  main_obs(:) = 0.d0
 
   call ftdqmc_initial
 
@@ -59,7 +59,7 @@ program ftdqmc_main
   ! warnup
   if( lwarnup ) then
       ! set nwarnup
-      nwarnup = ltrot+120
+      nwarnup = 200
       if(rhub.le.0.d0) nwarnup = 0
       write(fout,'(a,i8)') ' nwarnup = ', nwarnup
       do nsw = 1, nwarnup
@@ -82,6 +82,7 @@ program ftdqmc_main
       call preq            ! output equaltime measurement data to bins
       if(ltau) call prtau  ! output dynamical measurement data to bins
 
+      ! output configuration control
       if( nbc .eq. 1 )  then
           call cpu_time(time2)
           n_outconf_pace = nint( dble( 3600 * 12 ) / ( time2-time1 ) )
@@ -106,7 +107,7 @@ program ftdqmc_main
 
   call outconfc
 
-  if(lupdateu)  write(fout,'(a,e16.8)') ' >>> accep_u  = ', dble(main_obs(1))/aimag(main_obs(1))
+  if(lupdateu)  write(fout,'(a,e16.8)') ' >>> accep_u  = ', main_obs(1)/main_obs(2)
 
 
   call deallocate_core

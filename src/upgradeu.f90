@@ -7,12 +7,12 @@ subroutine upgradeu(ntau, green_up, green_dn)
 
   !arguments
   integer,intent(in) :: ntau
-  complex(dp), intent(inout), dimension(ndim,ndim) :: green_up, green_dn
+  real(dp), intent(inout), dimension(ndim,ndim) :: green_up, green_dn
 
   !local
-  complex(dp) ::  ratioup, ratiodn, ratiotot, del44_up, del44_dn
+  real(dp) ::  ratioup, ratiodn, ratiotot, del44_up, del44_dn
   integer :: i1, nl, nl1, nl2, nrflip
-  real(dp) :: accm, ratio_re, ratio_re_abs, random, weight
+  real(dp) :: accm, ratio_abs, random
 
   real(dp), external :: Ranf
 
@@ -21,32 +21,27 @@ subroutine upgradeu(ntau, green_up, green_dn)
      nrflip = 1
 
      del44_up   =  delta_u_up( nsigl_u(i1,ntau), nrflip )
-     ratioup = dcmplx(1.d0,0.d0) + del44_up * ( cone - green_up(i1,i1) )
+     ratioup = 1.d0 + del44_up * ( 1.d0 - green_up(i1,i1) )
 
      del44_dn   =  delta_u_dn( nsigl_u(i1,ntau), nrflip )
-     ratiodn = dcmplx(1.d0,0.d0) + del44_dn * ( cone - green_dn(i1,i1) )
+     ratiodn = 1.d0 + del44_dn * ( 1.d0 - green_dn(i1,i1) )
 
      ratiotot = (ratioup*ratiodn)
 
-     ratio_re = dble( ratiotot )
-
-     ratio_re_abs = ratio_re
-     if (ratio_re .lt. 0.d0 )  ratio_re_abs = - ratio_re 
+     ratio_abs = ratiotot
+     if (ratiotot .lt. 0.d0 )  ratio_abs = - ratiotot
 
      random = Ranf(iseed)
-     if ( ratio_re_abs .gt. random ) then
+     if ( ratio_abs .gt. random ) then
 
         accm  = accm + 1.d0
 
-        weight = dsqrt(dble(ratiotot*dconjg(ratiotot)))
-
-         
         ! update greep_up
         do nl = 1, ndim
             u1(nl) = green_up(nl,i1)/ratioup
             v1(nl) = green_up(i1,nl)
         end do
-        v1(i1) = v1(i1) - cone  ! note the sign
+        v1(i1) = v1(i1) - 1.d0  ! note the sign
         do nl = 1, ndim
             v1(nl) = del44_up * v1(nl)
         end do
@@ -62,7 +57,7 @@ subroutine upgradeu(ntau, green_up, green_dn)
             u1(nl) = green_dn(nl,i1)/ratiodn
             v1(nl) = green_dn(i1,nl)
         end do
-        v1(i1) = v1(i1) - cone  ! note the sign
+        v1(i1) = v1(i1) - 1.d0  ! note the sign
         do nl = 1, ndim
             v1(nl) = del44_dn * v1(nl)
         end do
@@ -78,5 +73,6 @@ subroutine upgradeu(ntau, green_up, green_dn)
         
      endif
   enddo
-  main_obs(1) = main_obs(1) + dcmplx( accm, dble(lq) )
+  main_obs(1) = main_obs(1) + accm
+  main_obs(2) = main_obs(2) + dble(lq)
 end subroutine upgradeu

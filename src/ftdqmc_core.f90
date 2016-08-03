@@ -237,7 +237,7 @@ module ftdqmc_core
       logical, intent(in) :: lmeasure
 
       ! local variables
-      integer :: nt, n, nt1, nt2
+      integer :: nt, n, nt1, nt2, nt_ob
 
       integer, external :: NRanf
 
@@ -256,6 +256,7 @@ module ftdqmc_core
       Dst_dn(:,nst)   = Ivec(:)
       Ust_dn(:,:,nst) = Imat(:,:)
   
+      nt_ob=NRanf(iseed,ltrot)
       do nt = ltrot, 1, -1
           if ( mod(nt, nwrap) .eq. 0 .and. (nt/nwrap) .lt. nst ) then
               n = nt/nwrap
@@ -290,7 +291,7 @@ module ftdqmc_core
           end if
   
           ! obser
-          if( lmeasure ) then
+          if( nt.eq.nt_ob .and. lmeasure ) then
              call obser_equaltime(nt)
           end if
   
@@ -330,6 +331,7 @@ module ftdqmc_core
           g0tdn = grdn-Imat
       end if
   
+      nt_ob=NRanf(iseed,ltrot)
       do nt = 1, ltrot, 1
 
           ! wrap H0
@@ -347,7 +349,7 @@ module ftdqmc_core
           end if
   
           ! obser
-          if( lmeasure .and. .not. ltau ) then
+          if( nt.eq.nt_ob .and. lmeasure .and. .not. ltau ) then
              call obser_equaltime(nt)
           end if
   

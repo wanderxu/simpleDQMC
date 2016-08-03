@@ -26,6 +26,7 @@ subroutine inconfc
            enddo
        enddo
 	else
+       iseed = iseed0
        ! read configurations from confin
        lwarnup = .false.
        write(fout,'(a)') ' start from old configuration, do not need warnup '

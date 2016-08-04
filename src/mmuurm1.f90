@@ -1,6 +1,6 @@
 subroutine mmuurm1(a_up, a_dn, ntau )
 
-! perform exp(-V(c)) * A
+! perform exp(-s*alpha_u*Diag(S_tau) * A
 
   use mod_global
   use matrix_tmp

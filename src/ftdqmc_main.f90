@@ -11,7 +11,7 @@ program ftdqmc_main
 !>
 !>     with w(c) = det( 1 + Bup(M)*Bup(M-1)*....*Bup(2)Bup(1) ) * det( 1 + Bdn(M)*Bdn(M-1)*....*Bdn(2)Bdn(1) )
 !> 
-!>     Bs(l) = exp(s*Diag(S_l)) * exp( -dtau * T )
+!>     Bs(tau) = exp(s*alpha_u*Diag(S_tau)) * exp( -dtau * T )
 !>     
 
   use mod_global

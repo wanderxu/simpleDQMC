@@ -64,7 +64,7 @@ module mod_global
 
   ! for DQMC
   integer, dimension(-1:1), save :: nflipl      ! for flipping auxilary field
-  real(dp), dimension(-1:1), save :: xsigma_u_up, xsigma_u_dn  ! interaction part matrix element e^(-V(c)), depend on filed
+  real(dp), dimension(-1:1), save :: xsigma_u_up, xsigma_u_dn  ! interaction part matrix element exp(s*alpha_u*Diag(S_tau), depend on filed
   real(dp), dimension(-1:1), save :: delta_u_up, delta_u_dn  ! ratio of interaction part matrix element for different fileds
 
   real(dp), allocatable, dimension(:,:,:), save :: urt, urtm1       ! part of e^(-dtau*T) and e^(dtau*T) for up spin flavor

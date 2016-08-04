@@ -15,7 +15,7 @@ module mod_global
   ! lattice
   integer, save :: a1_p(2), a2_p(2)  ! primitive cell vector
   integer, save :: L1_p(2), L2_p(2)  ! lattice size vector
-  real(dp), save :: b1_p(2), b2_p(2) ! Reciprocal lattice vector
+  real(dp), save :: b1_p(2), b2_p(2) ! least interval of k points
 
   integer, save :: ndim  ! dimension of B matrix, here equals l^2
   integer, save :: l     ! length of lattice
@@ -63,9 +63,9 @@ module mod_global
 
 
   ! for DQMC
-  integer, dimension(-1:1,1), save :: nflipl      ! for flipping auxilary field
+  integer, dimension(-1:1), save :: nflipl      ! for flipping auxilary field
   real(dp), dimension(-1:1), save :: xsigma_u_up, xsigma_u_dn  ! interaction part matrix element e^(-V(c)), depend on filed
-  real(dp), dimension(-1:1,1), save :: delta_u_up, delta_u_dn  ! ratio of interaction part matrix element for different fileds
+  real(dp), dimension(-1:1), save :: delta_u_up, delta_u_dn  ! ratio of interaction part matrix element for different fileds
 
   real(dp), allocatable, dimension(:,:,:), save :: urt, urtm1       ! part of e^(-dtau*T) and e^(dtau*T) for up spin flavor
   real(dp), allocatable, dimension(:,:,:), save :: urt_dn, urtm1_dn ! part of e^(-dtau*T) and e^(dtau*T) for dn spin flavor
@@ -103,12 +103,13 @@ module mod_global
     if ( exists .eqv. .true. ) then
         open( unit=finp, file='ftdqmc.in', status='unknown' )
         read(finp,*) rhub, l, beta, dtau, nwrap, nsweep, nbin, ltau
+        close(finp)
     else
         write(fout,'(a)') ' No ftdqmc.in found, start simulation with default parameters '
     end if
 
     ! tune parameters
-    if( rhub .gt. -0.001d0 ) lupdateu = .true.
+    if( rhub .gt. 0.d0 ) lupdateu = .true.
     lq = l*l
     nfam = 1
     ndim = lq   ! the dimension of matrix inside determinant

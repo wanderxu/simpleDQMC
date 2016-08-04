@@ -54,8 +54,8 @@ subroutine ftdqmc_initial_print
   write(fout,'(a,i6)')      ' nwrap  = ', nwrap
   write(fout,'(a,i6)')      ' nsweep = ', nsweep
   write(fout,'(a,i6)')      ' nbin   = ', nbin
-  write(fout,*)  'lupdateu = ', lupdateu
-  write(fout,*)  'ltau = ', ltau
+  write(fout,*)            'lupdateu = ', lupdateu
+  write(fout,*)            'ltau     = ', ltau
 
   write(fout,*)
   write(fout,'(a)')' --------------------- '

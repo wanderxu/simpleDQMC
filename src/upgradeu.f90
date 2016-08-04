@@ -11,19 +11,17 @@ subroutine upgradeu(ntau, green_up, green_dn)
 
   !local
   real(dp) ::  ratioup, ratiodn, ratiotot, del44_up, del44_dn
-  integer :: i1, nl, nl1, nl2, nrflip
+  integer :: i1, nl, nl1, nl2
   real(dp) :: accm, ratio_abs, random
 
   real(dp), external :: Ranf
 
   accm  = 0.d0
   do i1 = 1,lq
-     nrflip = 1
-
-     del44_up   =  delta_u_up( nsigl_u(i1,ntau), nrflip )
+     del44_up   =  delta_u_up( nsigl_u(i1,ntau) )
      ratioup = 1.d0 + del44_up * ( 1.d0 - green_up(i1,i1) )
 
-     del44_dn   =  delta_u_dn( nsigl_u(i1,ntau), nrflip )
+     del44_dn   =  delta_u_dn( nsigl_u(i1,ntau) )
      ratiodn = 1.d0 + del44_dn * ( 1.d0 - green_dn(i1,i1) )
 
      ratiotot = (ratioup*ratiodn)
@@ -69,7 +67,7 @@ subroutine upgradeu(ntau, green_up, green_dn)
         enddo
 
         ! flip
-        nsigl_u(i1,ntau) =  nflipl(nsigl_u(i1,ntau), nrflip)
+        nsigl_u(i1,ntau) =  nflipl(nsigl_u(i1,ntau))
         
      endif
   enddo

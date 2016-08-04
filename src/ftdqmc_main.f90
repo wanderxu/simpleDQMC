@@ -4,14 +4,14 @@ program ftdqmc_main
 !>  Here is an example for solving Hubbard model on square lattice
 !> 
 !>  Hamiltionian:
-!>     H = -t \sum_<ijs> c_is^dagger c_js + h.c. + U \sum_i ( n_iup - 1/2) * ( n_idn - 1/2 )
+!>     H = -t \sum_<ij>s c_is^dagger c_js + h.c. + U \sum_i ( n_iup - 1/2) * ( n_idn - 1/2 )
 !>   
 !>  Partition function
 !>     Z = \sum_c w(c),   c is configuration
 !>
 !>     with w(c) = det( 1 + Bup(M)*Bup(M-1)*....*Bup(2)Bup(1) ) * det( 1 + Bdn(M)*Bdn(M-1)*....*Bdn(2)Bdn(1) )
 !> 
-!>     B(i) = exp(V(c)) * exp( -dtau * T )
+!>     Bs(l) = exp(s*Diag(S_l)) * exp( -dtau * T )
 !>     
 
   use mod_global
@@ -55,17 +55,19 @@ program ftdqmc_main
   call ftdqmc_sweep_start
 
   write(fout,'(a)') ' ftdqmc_sweep_start done '
+  write(fout,*)
 
   ! warnup
   if( lwarnup ) then
       ! set nwarnup
-      nwarnup = 200
+      nwarnup = nint(4*lq*beta)  ! usually, 4*lq*beta sweeps of warnup is enough.
       if(rhub.le.0.d0) nwarnup = 0
       write(fout,'(a,i8)') ' nwarnup = ', nwarnup
       do nsw = 1, nwarnup
-          call ftdqmc_sweep(.false.)
+          call ftdqmc_sweep(lmeasure=.false.)
       end do
       write(fout,'(a)') ' warmup done '
+      write(fout,*)
   end if
 
   call cpu_time(time1)
@@ -75,7 +77,7 @@ program ftdqmc_main
 
       do nsw = 1, nsweep
 
-          call ftdqmc_sweep(.true.)
+          call ftdqmc_sweep(lmeasure=.true.)
 
       end do
 
@@ -85,17 +87,18 @@ program ftdqmc_main
       ! output configuration control
       if( nbc .eq. 1 )  then
           call cpu_time(time2)
-          n_outconf_pace = nint( dble( 3600 * 12 ) / ( time2-time1 ) )
+          n_outconf_pace = nint( dble( 3600 * 12 ) / ( time2-time1 ) ) ! set output configuration pace, default is every 12 hours
           if( n_outconf_pace .lt. 1 ) n_outconf_pace = 1
           write(fout,'(a,e16.8,a)') ' time for 1 bin: ', time2-time1, ' s'
           write(fout,'(a,i12)') ' n_out_conf_pace = ', n_outconf_pace
+          write(fout,*)
       end if
 
-      if( n_outconf_pace .lt. nbin/3 ) then
+      if( n_outconf_pace .lt. nbin/3 ) then  ! output configuraton every n_outconf_pace bins, if it is less than nbin/3
           if( mod(nbc,n_outconf_pace) .eq. 0 ) then
               call outconfc
           end if
-      else if( mod( nbc, max(nbin/3,1) ) .eq. 0 ) then
+      else if( mod( nbc, max(nbin/3,1) ) .eq. 0 ) then ! output configuration every nbin/3 bins if n_outconf_pace is too large
           call outconfc
       end if
 
@@ -103,10 +106,12 @@ program ftdqmc_main
 
   end do
 
+  write(fout,*)
   write(fout, '(a,e16.8)') ' max_wrap_error = ', max_wrap_error
 
   call outconfc
 
+  write(fout,*)
   if(lupdateu)  write(fout,'(a,e16.8)') ' >>> accep_u  = ', main_obs(1)/main_obs(2)
 
 

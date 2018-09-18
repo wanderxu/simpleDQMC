@@ -1,7 +1,13 @@
+# A Simple Determinant Quantum Monte Carlo (DQMC) code
+
+### Brief introduction
+
 This a simple Determinant Quantum Monte Carlo (DQMC) code for international summer school on computational approaches for quantum many body systems. (http://compqmb2016.csp.escience.cn)
 We take Hubbard model on square lattice as an example, showing how DQMC simulation works.
 
-It is very easy to compile this code, you only need a fortran compiler.
+### How to use it?
+
+It is very easy to compile this code, you only need a Fortran compiler.
 Here are steps to compile and run the code in Linux system.
 By default, we will use gfortran to compile it.
 
